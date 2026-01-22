@@ -1,7 +1,7 @@
 function Home() {
   return (
-    <div>
-      HOME
+    <div className="flex justify-center py-10 font-bold text-9xl">
+      HOME PAGE
     </div>
   )
 }

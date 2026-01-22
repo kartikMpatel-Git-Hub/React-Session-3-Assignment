@@ -1,12 +1,30 @@
 import { Eye, ShoppingCart } from "lucide-react"
-import type { ProductDto } from "../type/type"
+import type { CartItem, ProductDto } from "../type/type"
 import { useNavigate } from "react-router"
+import { useDispatch } from "react-redux"
+import { addItemToCart } from "../slice/cartSlice"
 
 function ProductCard({ product }: { product: ProductDto }) {
     const navigator = useNavigate()
+    const dispatch = useDispatch()
 
-    const handleViewProduct = ()=>{
+
+    const handleViewProduct = () => {
         navigator(`/shop/products/${product.id}`)
+    }
+
+    const handleAddToCart = ()=>{
+        const item: CartItem = {
+              id: Number(product?.id),
+              title: product?.title || "",
+              description: product?.description || "",
+              category: product?.category || "",
+              price: Number(product?.price),
+              stock: Number(product?.stock),
+              images: product?.images || "",
+              qty: 1
+            }
+        dispatch(addItemToCart({item}))
     }
     return (
         <div className={`bg-white text-slate-800 p-3 w-72 rounded-2xl shadow-2xl`}>
@@ -28,12 +46,14 @@ function ProductCard({ product }: { product: ProductDto }) {
                 Stock : {product.stock}
             </div>
             <div className="flex justify-around">
-                <button 
+                <button
                     onClick={handleViewProduct}
                     className="bg-slate-800 text-white p-2 rounded-2xl flex m-2">
-                   <Eye /> View Product
+                    <Eye /> View Product
                 </button>
-                <button className="bg-slate-800 text-white p-2 rounded-2xl flex m-2">
+                <button
+                    onClick={handleAddToCart}
+                    className="bg-slate-800 text-white p-2 rounded-2xl flex m-2">
                     <ShoppingCart />
                 </button>
             </div>

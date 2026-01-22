@@ -13,7 +13,7 @@ function AddProduct() {
     })
     const [errors, setErrors] = useState<String[]>([])
     const queryClient = useQueryClient()
-    const { mutate,isPending } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: addNewProduct,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -21,6 +21,7 @@ function AddProduct() {
         },
         onError: (error) => {
             console.log(error)
+            setErrors(["failed to add product"])
         }
     })
     const navigator = useNavigate()
@@ -31,6 +32,9 @@ function AddProduct() {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setNewProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    }
+    const handleClearForm = () => {
+        setErrors([])
     }
 
     const addProduct = (e: React.FormEvent<HTMLFormElement>) => {
@@ -54,8 +58,6 @@ function AddProduct() {
 
     const isValidForm = () => {
         let isError = false
-        console.log(newProduct);
-
         if (newProduct.title.length == 0) {
             setErrors((prev) => [...prev, "Product title Can Not Be Empty"])
             isError = true
@@ -97,6 +99,15 @@ function AddProduct() {
 
     return (
         <div className="px-50 my-20 mx-60 rounded-2xl p-2 shadow-2xl">
+            <div className="text-red-700">
+                {
+                    errors.map((error, idx) => (
+                        <div key={idx}>
+                            {error}
+                        </div>
+                    ))
+                }
+            </div>
             <div className="flex justify-center my-10 bg-slate-800 text-white p-3 rounded-t-2xl">
                 Add New Product
             </div>
@@ -135,14 +146,16 @@ function AddProduct() {
                         required
                     />
                     <div className="flex m-2 justify-center gap-3">
-                        <button 
+                        <button
                             disabled={isPending}
                             className={`bg-slate-800 p-3 rounded-2xl text-white`}>
-                            {isPending ? "Saving..": "Add Product"}
+                            {isPending ? "Saving.." : "Add Product"}
                         </button>
-                        <button className={`bg-slate-800 p-3 rounded-2xl text-white`}>
-                            Clear Form
-                        </button>
+                        <input 
+                            type="reset"
+                            onClick={handleClearForm}
+                            value={"clear form"}
+                            className={`bg-slate-800 p-3 rounded-2xl text-white`}/>
                     </div>
                 </form>
 
@@ -153,15 +166,7 @@ function AddProduct() {
                         <ArrowUpRightFromSquareIcon /> back to product
                     </button>
                 </div>
-                <div className="text-red-700">
-                    {
-                        errors.map((error, idx) => (
-                            <div key={idx}>
-                                {error}
-                            </div>
-                        ))
-                    }
-                </div>
+
             </div>
         </div>
     )

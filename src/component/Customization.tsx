@@ -62,6 +62,7 @@ function Customization() {
             <input
               type='number'
               min={1}
+              max={10}
               value={qty}
               onChange={(e) => setQty(Number(e.target.value))}
               className='border-2 w-fit'
