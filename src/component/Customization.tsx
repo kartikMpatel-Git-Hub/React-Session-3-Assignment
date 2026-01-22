@@ -1,20 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
-import { CircleAlert, Loader, LucideArrowUpRightFromSquare } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router'
-import { getProductByid } from '../api/productService'
+import { LucideArrowUpRightFromSquare } from 'lucide-react'
+import { useNavigate, useOutletContext } from 'react-router'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addItemToCart } from '../slice/cartSlice'
-import type { CartItem } from '../type/type'
+import type { CartItem, ProductDto } from '../type/type'
 
 function Customization() {
   const navigator = useNavigate()
-  const { productId } = useParams()
+  const {product} = useOutletContext<{product:ProductDto}>()
   const [qty, setQty] = useState<number>(1)
-  const { isLoading, error, data: product } = useQuery({
-    queryKey: ['product'],
-    queryFn: () => getProductByid(Number(productId))
-  })
   const dispatch = useDispatch()
 
   const handleBackToProductDetail = () => {
@@ -36,12 +30,6 @@ function Customization() {
     dispatch(addItemToCart({ item }))
     navigator("/shop/cart")
   }
-
-  if (isLoading)
-    return <p className='flex justify-center my-30'><Loader /> Loading...</p>
-
-  if (error)
-    return <p className='flex justify-center my-30'><CircleAlert /> an error occurred : {error.message}</p>
 
   return (
     <div className=''>

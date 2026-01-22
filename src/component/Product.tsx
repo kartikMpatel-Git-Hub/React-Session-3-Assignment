@@ -1,25 +1,15 @@
-import { getProductByid } from '../api/productService'
-import { useQuery } from '@tanstack/react-query'
-import { useNavigate, useParams } from 'react-router'
-import { CircleAlert, Loader, ShoppingCart } from 'lucide-react'
+import { useNavigate, useOutletContext } from 'react-router'
+import { ShoppingCart } from 'lucide-react'
+import type { ProductDto } from '../type/type'
 
 function Product() {
-  const { productId } = useParams()
+  const {product} = useOutletContext<{product : ProductDto}>()
   const navigator = useNavigate()
-  const { isLoading, error, data: product } = useQuery({
-    queryKey: ['product'],
-    queryFn: () => getProductByid(Number(productId))
-  })
 
   const handleCheckout = ()=>{
     navigator("./customize")
   }
 
-  if (isLoading)
-    return <p className='flex justify-center my-30'><Loader /> Loading...</p>
-
-  if (error)
-    return <p className='flex justify-center my-30'><CircleAlert /> an error occurred : {error.message}</p>
   return (
     <div className='bg-gray-200 mx-50 my-10 p-10 rounded-2xl '>
       <div>

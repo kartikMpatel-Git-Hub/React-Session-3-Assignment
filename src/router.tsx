@@ -8,6 +8,7 @@ import Customization from './component/Customization'
 import Cart from './component/Cart'
 import Product from './component/Product'
 import AddProduct from './component/AddProduct'
+import ProductLayout from './component/ProductLayout'
 
 
 const router = createBrowserRouter([
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
                             { index: true, element: <Products /> },
                             {
                                 path: ":productId",
+                                element : <ProductLayout />,
                                 children: [
                                     { index: true, element: <Product /> },
                                     { path: "customize", element: <Customization /> }
