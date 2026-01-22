@@ -32,6 +32,7 @@ api.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
         if(error.response && error.response.status === 401){
             console.log("Unauthorized request. Redirecting to login...");
         }
+        return Promise.reject(error)
     }
 )
 
