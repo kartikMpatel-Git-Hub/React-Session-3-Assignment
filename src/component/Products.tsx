@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getProducts } from '../api/productService'
 import ProductCard from './ProductCard'
 import { useNavigate } from 'react-router'
+import { CircleAlert, Loader } from 'lucide-react'
 
 function Products() {
     const { isLoading, error, data: products } = useQuery({
@@ -14,11 +15,11 @@ function Products() {
     }
 
     if (isLoading)
-        return <p>Loading...</p>
+    return <p className='flex justify-center my-30'><Loader /> Loading...</p>
 
-    if (error)
-        return <p>an error occurred : {error.message}</p>
-    
+  if (error)
+    return <p className='flex justify-center my-30'><CircleAlert /> an error occurred : {error.message}</p>
+
     return (
         <div className='bg-gray-400'>
             <div className='flex justify-center'>

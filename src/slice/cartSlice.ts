@@ -53,10 +53,18 @@ const cartSlice = createSlice({
                 if(item.qty == 0)
                     state.items = state.items.filter(item => item.id !== action.payload.id)
             }
+        },
+        increaseItemQty : (state,action: PayloadAction<{id:string | number}>)=>{
+            const item = state.items.find(item => item.id === action.payload.id)
+            if(item && item.qty < 10 && item.qty < item.stock){
+                item.qty++
+                state.totalQty++
+                state.totalAmount += item.price
+            }
         }
     }
 })
 
-export const {addItemToCart,removeItemFromCart,clearCart,decreaseItemQty} = cartSlice.actions
+export const {addItemToCart,removeItemFromCart,clearCart,decreaseItemQty,increaseItemQty} = cartSlice.actions
 
 export default cartSlice.reducer
