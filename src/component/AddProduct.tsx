@@ -2,6 +2,7 @@ import { ArrowUpRightFromSquareIcon } from "lucide-react"
 import { useState, type ChangeEvent } from "react"
 import { useNavigate } from "react-router"
 import { addNewProduct } from "../api/productService"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 function AddProduct() {
     const [newProduct, setNewProduct] = useState({
@@ -11,6 +12,17 @@ function AddProduct() {
         category: ""
     })
     const [errors, setErrors] = useState<String[]>([])
+    const queryClient = useQueryClient()
+    const { mutate,isPending } = useMutation({
+        mutationFn: addNewProduct,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] })
+            navigator("../")
+        },
+        onError: (error) => {
+            console.log(error)
+        }
+    })
     const navigator = useNavigate()
 
     const handleBackToProduct = () => {
@@ -25,17 +37,25 @@ function AddProduct() {
         e.preventDefault()
         setErrors([])
         console.log(isValidForm());
-        
+
         if (!isValidForm()) {
             return
         }
-        saveProduct()
+        mutate({
+            id: Date.now(),
+            title: newProduct.title,
+            description: newProduct.description,
+            category: newProduct.category,
+            price: newProduct.price,
+            stock: 10,
+            images: ""
+        })
     }
 
     const isValidForm = () => {
         let isError = false
         console.log(newProduct);
-        
+
         if (newProduct.title.length == 0) {
             setErrors((prev) => [...prev, "Product title Can Not Be Empty"])
             isError = true
@@ -70,28 +90,10 @@ function AddProduct() {
             setErrors((prev) => [...prev, "description Required Atlest 3 Characters"])
             isError = true
         }
-        if(isError)
+        if (isError)
             return false
         return true
     }
-
-    const saveProduct = async () => {
-        try {
-            await addNewProduct({
-                id: Date.now(),
-                title: newProduct.title,
-                description: newProduct.description,
-                category: newProduct.category,
-                price: newProduct.price,
-                stock: 10,
-                images: ""
-            })
-            navigator("../")
-        } catch (error) {
-            console.log(error);
-        } 
-    }
-
 
     return (
         <div className="px-50 my-20 mx-60 rounded-2xl p-2 shadow-2xl">
@@ -133,8 +135,10 @@ function AddProduct() {
                         required
                     />
                     <div className="flex m-2 justify-center gap-3">
-                        <button className={`bg-slate-800 p-3 rounded-2xl text-white`}>
-                            Add Product
+                        <button 
+                            disabled={isPending}
+                            className={`bg-slate-800 p-3 rounded-2xl text-white`}>
+                            {isPending ? "Saving..": "Add Product"}
                         </button>
                         <button className={`bg-slate-800 p-3 rounded-2xl text-white`}>
                             Clear Form

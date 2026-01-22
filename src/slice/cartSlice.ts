@@ -36,7 +36,7 @@ const cartSlice = createSlice({
                 const item = state.items[itemIdx]
                 state.totalQty -= item.qty
                 state.totalAmount -= item.price * item.qty
-                state.items.slice(itemIdx, 1)
+                state.items.splice(itemIdx, 1)
             }
         }, 
         clearCart: (state) => {
